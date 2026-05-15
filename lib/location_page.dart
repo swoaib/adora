@@ -11,8 +11,6 @@ class LocationPage extends StatefulWidget {
 }
 
 class _LocationPageState extends State<LocationPage> {
-
-
   @override
   void initState() {
     super.initState();
@@ -20,6 +18,7 @@ class _LocationPageState extends State<LocationPage> {
       context.read<LocationProvider>().fetchLocation();
     });
   }
+
   @override
   Widget build(BuildContext context) {
     final locationMessage = context.watch<LocationProvider>().locationMessage;
@@ -42,16 +41,16 @@ class _LocationPageState extends State<LocationPage> {
               child: Text(
                 locationMessage,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: Colors.blueAccent,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(color: Colors.blueAccent),
               ),
             ),
-            SizedBox(
-              height: 200,
-              width: 400,
-              child: LocationMap(),
-            )
+            const SizedBox(height: 16),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: SizedBox(height: 200, width: 400, child: LocationMap()),
+            ),
           ],
         ),
       ),

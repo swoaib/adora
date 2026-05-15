@@ -4,21 +4,40 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
-class LocationMap extends StatelessWidget {
+class LocationMap extends StatefulWidget {
   const LocationMap({super.key});
+
+  @override
+  State<LocationMap> createState() => _LocationMapState();
+}
+
+class _LocationMapState extends State<LocationMap> {
+  final MapController _mapController = MapController();
 
   @override
   Widget build(BuildContext context) {
     final locationData = context.watch<LocationProvider>().locationData;
+
+    // Automatically move the map camera when the location updates
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (locationData != null && mounted) {
+        _mapController.move(
+          LatLng(locationData.latitude ?? 0, locationData.longitude ?? 0),
+          _mapController.camera.zoom, // Keep current zoom level
+        );
+      }
+    });
+
     return locationData == null
         ? Center(child: CircularProgressIndicator())
         : FlutterMap(
+            mapController: _mapController,
             options: MapOptions(
               initialCenter: LatLng(
                 locationData.latitude ?? 0,
                 locationData.longitude ?? 0,
-              ), // Center the map over London, UK
-              initialZoom: 9.2,
+              ), 
+              initialZoom: 15.0, // Zoomed in a bit closer for user tracking
             ),
             children: [
               TileLayer(
