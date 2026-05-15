@@ -1,7 +1,10 @@
 import 'dart:async';
 
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:location/location.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LocationProvider with ChangeNotifier {
   final Location _location = Location();
@@ -9,9 +12,35 @@ class LocationProvider with ChangeNotifier {
   LocationData? _locationData;
   String _locationMessage = "";
   StreamSubscription<LocationData>? _locationSubscription;
+  List<LatLng> _locationHistory = [];
 
   LocationData? get locationData => _locationData;
   String get locationMessage => _locationMessage;
+  List<LatLng> get locationHistory => _locationHistory;
+
+  LocationProvider() {
+    _loadHistory();
+  }
+
+  Future<void> _loadHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? historyJson = prefs.getString('location_history');
+    if (historyJson != null) {
+      try {
+        final List<dynamic> decoded = jsonDecode(historyJson);
+        _locationHistory = decoded.map((item) => LatLng(item['lat'], item['lng'])).toList();
+        notifyListeners();
+      } catch (e) {
+        debugPrint("Error loading history: $e");
+      }
+    }
+  }
+
+  Future<void> _saveHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String historyJson = jsonEncode(_locationHistory.map((ll) => {'lat': ll.latitude, 'lng': ll.longitude}).toList());
+    await prefs.setString('location_history', historyJson);
+  }
 
   Future<void> fetchLocation() async {
     bool serviceEnabled;
@@ -52,6 +81,12 @@ class LocationProvider with ChangeNotifier {
         _locationData = currentLocation;
         if (_locationData != null) {
           _locationMessage = "Lat: ${_locationData!.latitude}\nLng: ${_locationData!.longitude}";
+          
+          final newLatLng = LatLng(_locationData!.latitude!, _locationData!.longitude!);
+          if (_locationHistory.isEmpty || _locationHistory.last.latitude != newLatLng.latitude || _locationHistory.last.longitude != newLatLng.longitude) {
+            _locationHistory.add(newLatLng);
+            _saveHistory();
+          }
         } else {
           _locationMessage = "Failed to get location.";
         }
@@ -59,8 +94,8 @@ class LocationProvider with ChangeNotifier {
       });
     } catch (e) {
       _locationMessage = "Error fetching location: $e";
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   @override
