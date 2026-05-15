@@ -1,4 +1,4 @@
-package com.example.adora
+package x.example.adora
 
 import io.flutter.embedding.android.FlutterActivity
 
