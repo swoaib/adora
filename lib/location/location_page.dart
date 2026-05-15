@@ -1,5 +1,5 @@
-import 'package:adora/location_provider.dart';
-import 'package:adora/widgets/location_map.dart';
+import 'package:adora/location/location_provider.dart';
+import 'package:adora/location/widgets/location_map.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
