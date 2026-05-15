@@ -47,7 +47,11 @@ class _LocationPageState extends State<LocationPage> {
                 ),
               ),
             ),
-            LocationMap()
+            SizedBox(
+              height: 200,
+              width: 400,
+              child: LocationMap(),
+            )
           ],
         ),
       ),

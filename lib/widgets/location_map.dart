@@ -20,23 +20,37 @@ class LocationMap extends StatelessWidget {
               ), // Center the map over London, UK
               initialZoom: 9.2,
             ),
-            children: [],
-            // children: [
-            //   TileLayer( // Bring your own tiles
-            //     urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // For demonstration only
-            //     userAgentPackageName: /*'com.example.app'*/, // Add your app identifier
-            //     // And many more recommended properties!
-            //   ),
-            //   RichAttributionWidget( // Include a stylish prebuilt attribution widget that meets all requirments
-            //     attributions: [
-            //       TextSourceAttribution(
-            //         'OpenStreetMap contributors',
-            //         onTap: () => launchUrl(Uri.parse('https://openstreetmap.org/copyright')), // (external)
-            //       ),
-            //       // Also add images...
-            //     ],
-            //   ),
-            // ],
+            children: [
+              TileLayer(
+                // Bring your own tiles
+                urlTemplate:
+                    'https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', // CartoDB is permissive and free for dev
+              ),
+              MarkerLayer(
+                markers: [
+                  Marker(
+                    point: LatLng(
+                      locationData.latitude ?? 0,
+                      locationData.longitude ?? 0,
+                    ),
+                    width: 40,
+                    height: 40,
+                    child: const Icon(
+                      Icons.location_pin,
+                      color: Colors.red,
+                      size: 40,
+                    ),
+                  ),
+                ],
+              ),
+              RichAttributionWidget(
+                // Include a stylish prebuilt attribution widget that meets all requirments
+                attributions: [
+                  TextSourceAttribution('OpenStreetMap contributors'),
+                  // Also add images...
+                ],
+              ),
+            ],
           );
   }
 }
