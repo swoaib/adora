@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:location/location.dart';
 
@@ -6,6 +8,7 @@ class LocationProvider with ChangeNotifier {
 
   LocationData? _locationData;
   String _locationMessage = "";
+  StreamSubscription<LocationData>? _locationSubscription;
 
   LocationData? get locationData => _locationData;
   String get locationMessage => _locationMessage;
@@ -44,15 +47,25 @@ class LocationProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      _locationData = await _location.getLocation();
-      if (_locationData != null) {
-        _locationMessage = "Lat: ${_locationData!.latitude}\nLng: ${_locationData!.longitude}";
-      } else {
-        _locationMessage = "Failed to get location.";
-      }
+      _location.enableBackgroundMode(enable: true);
+      _locationSubscription = _location.onLocationChanged.listen((LocationData currentLocation) {
+        _locationData = currentLocation;
+        if (_locationData != null) {
+          _locationMessage = "Lat: ${_locationData!.latitude}\nLng: ${_locationData!.longitude}";
+        } else {
+          _locationMessage = "Failed to get location.";
+        }
+        notifyListeners();
+      });
     } catch (e) {
       _locationMessage = "Error fetching location: $e";
     }
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _locationSubscription?.cancel();
+    super.dispose();
   }
 }
