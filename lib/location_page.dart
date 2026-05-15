@@ -1,4 +1,5 @@
 import 'package:adora/location_provider.dart';
+import 'package:adora/widgets/location_map.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -46,6 +47,7 @@ class _LocationPageState extends State<LocationPage> {
                 ),
               ),
             ),
+            LocationMap()
           ],
         ),
       ),
