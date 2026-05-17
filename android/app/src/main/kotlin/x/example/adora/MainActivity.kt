@@ -11,6 +11,7 @@ import android.content.IntentFilter
 import android.os.BatteryManager
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import androidx.core.content.ContextCompat
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "samples.flutter.dev/location"
@@ -45,6 +46,13 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun startLocationService() {
+        val hasFineLocation = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        val hasCoarseLocation = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        
+        if (!hasFineLocation && !hasCoarseLocation) {
+            return
+        }
+
         val serviceIntent = Intent(this, LocationTrackingService::class.java)
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
             try {
