@@ -22,7 +22,21 @@ class LocationProvider with ChangeNotifier {
   }
 
   Future<void> _loadHistory() async {
-    _locationHistory = await _locationService.loadHistory();
+    final standardHistory = await _locationService.loadHistory();
+    final nativeHistory = await _locationService.loadNativeHistory();
+    
+    // Combine and remove exact duplicates based on lat/lng roughly
+    final allHistory = [...standardHistory, ...nativeHistory];
+    final uniqueHistory = <LatLng>[];
+    for (var loc in allHistory) {
+      if (uniqueHistory.isEmpty || 
+          uniqueHistory.last.latitude != loc.latitude || 
+          uniqueHistory.last.longitude != loc.longitude) {
+        uniqueHistory.add(loc);
+      }
+    }
+    
+    _locationHistory = uniqueHistory;
     notifyListeners();
   }
 

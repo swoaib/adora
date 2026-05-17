@@ -21,23 +21,6 @@ class _LocationPageState extends State<LocationPage> {
     });
   }
 
-  String _batteryLevel = 'Unknown battery level.';
-  static const platform = MethodChannel('samples.flutter.dev/battery');
-
-  Future<void> _getBatteryLevel() async {
-    String batteryLevel;
-    try {
-      final result = await platform.invokeMethod<int>('getBatteryLevel');
-      batteryLevel = 'Battery level at $result % .';
-    } on PlatformException catch (e) {
-      batteryLevel = "Failed to get battery level: '${e.message}'.";
-    }
-
-    setState(() {
-      _batteryLevel = batteryLevel;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final locationMessage = context.watch<LocationProvider>().locationMessage;
@@ -52,11 +35,12 @@ class _LocationPageState extends State<LocationPage> {
           padding: EdgeInsetsGeometry.all(16),
           child: Column(
             children: [
-              ElevatedButton(
-                onPressed: _getBatteryLevel,
-                child: const Text('Get Battery Level'),
+              const SizedBox(height: 16),
+              const Text(
+                'Background tracking runs automatically when the app is minimized or killed.',
+                style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
+                textAlign: TextAlign.center,
               ),
-              Text(_batteryLevel),
               const SizedBox(height: 32),
               const Text(
                 'Your Current Location:',
