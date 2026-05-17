@@ -2,6 +2,7 @@ import 'package:adora/location/location_provider.dart';
 import 'package:adora/location/widgets/location_history_map.dart';
 import 'package:adora/location/widgets/location_map.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class LocationPage extends StatefulWidget {
@@ -20,6 +21,23 @@ class _LocationPageState extends State<LocationPage> {
     });
   }
 
+  String _batteryLevel = 'Unknown battery level.';
+  static const platform = MethodChannel('samples.flutter.dev/battery');
+
+  Future<void> _getBatteryLevel() async {
+    String batteryLevel;
+    try {
+      final result = await platform.invokeMethod<int>('getBatteryLevel');
+      batteryLevel = 'Battery level at $result % .';
+    } on PlatformException catch (e) {
+      batteryLevel = "Failed to get battery level: '${e.message}'.";
+    }
+
+    setState(() {
+      _batteryLevel = batteryLevel;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final locationMessage = context.watch<LocationProvider>().locationMessage;
@@ -34,6 +52,11 @@ class _LocationPageState extends State<LocationPage> {
           padding: EdgeInsetsGeometry.all(16),
           child: Column(
             children: [
+              ElevatedButton(
+                onPressed: _getBatteryLevel,
+                child: const Text('Get Battery Level'),
+              ),
+              Text(_batteryLevel),
               const SizedBox(height: 32),
               const Text(
                 'Your Current Location:',
