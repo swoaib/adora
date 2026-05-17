@@ -76,7 +76,7 @@ class LocationService {
         final List<dynamic> decoded = jsonDecode(historyJson);
         return decoded.map((item) => LatLng(item['lat'], item['lng'])).toList();
       } catch (e) {
-        // Handle error
+        debugPrint("Failed to decode location history: $e");
       }
     }
     return [];
