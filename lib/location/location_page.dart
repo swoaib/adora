@@ -34,13 +34,6 @@ class _LocationPageState extends State<LocationPage> {
           padding: EdgeInsetsGeometry.all(16),
           child: Column(
             children: [
-              const SizedBox(height: 16),
-              const Text(
-                'Background tracking runs automatically when the app is minimized or killed.',
-                style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 32),
               const Text(
                 'Your Current Location:',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
