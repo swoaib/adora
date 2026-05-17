@@ -2,7 +2,6 @@ import 'package:adora/location/location_provider.dart';
 import 'package:adora/location/widgets/location_history_map.dart';
 import 'package:adora/location/widgets/location_map.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class LocationPage extends StatefulWidget {

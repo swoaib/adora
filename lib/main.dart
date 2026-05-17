@@ -3,8 +3,6 @@ import 'package:adora/location/location_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:adora/location/location_service.dart';
-
 void main() {
   runApp(const MyApp());
 }

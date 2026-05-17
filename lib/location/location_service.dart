@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:location/location.dart';
 import 'package:latlong2/latlong.dart';
@@ -12,7 +13,7 @@ class LocationService {
     try {
       await platform.invokeMethod<bool>('startBackgroundTracking');
     } catch (e) {
-      print("Failed to start tracking: $e");
+      debugPrint("Failed to start tracking: $e");
     }
   }
 
@@ -20,7 +21,7 @@ class LocationService {
     try {
       await platform.invokeMethod<bool>('stopBackgroundTracking');
     } catch (e) {
-      print("Failed to stop tracking: $e");
+      debugPrint("Failed to stop tracking: $e");
     }
   }
 
@@ -51,7 +52,7 @@ class LocationService {
         await _location.enableBackgroundMode(enable: true);
       }
     } catch (e) {
-      print("Failed to enable background mode: $e");
+      debugPrint("Failed to enable background mode: $e");
     }
 
     return null; // Null means success
