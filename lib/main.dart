@@ -1,5 +1,6 @@
 import 'package:adora/location/location_page.dart';
 import 'package:adora/location/location_provider.dart';
+import 'package:adora/location/location_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,10 +20,10 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       home: ChangeNotifierProvider(
-        create: (context) => LocationProvider(),
+        create: (context) =>
+            LocationProvider(locationService: LocationService()),
         child: const LocationPage(),
       ),
     );
   }
 }
-

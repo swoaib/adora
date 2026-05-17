@@ -6,7 +6,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:adora/location/location_service.dart';
 
 class LocationProvider with ChangeNotifier {
-  final LocationService _locationService = LocationService();
+  final LocationService _locationService;
 
   LocationData? _locationData;
   String _locationMessage = "";
@@ -17,25 +17,26 @@ class LocationProvider with ChangeNotifier {
   String get locationMessage => _locationMessage;
   List<LatLng> get locationHistory => _locationHistory;
 
-  LocationProvider() {
+  LocationProvider({required LocationService locationService})
+    : _locationService = locationService {
     _loadHistory();
   }
 
   Future<void> _loadHistory() async {
     final standardHistory = await _locationService.loadHistory();
     final nativeHistory = await _locationService.loadNativeHistory();
-    
+
     // Combine and remove exact duplicates based on lat/lng roughly
     final allHistory = [...standardHistory, ...nativeHistory];
     final uniqueHistory = <LatLng>[];
     for (var loc in allHistory) {
-      if (uniqueHistory.isEmpty || 
-          uniqueHistory.last.latitude != loc.latitude || 
+      if (uniqueHistory.isEmpty ||
+          uniqueHistory.last.latitude != loc.latitude ||
           uniqueHistory.last.longitude != loc.longitude) {
         uniqueHistory.add(loc);
       }
     }
-    
+
     _locationHistory = uniqueHistory;
     notifyListeners();
   }
@@ -46,22 +47,30 @@ class LocationProvider with ChangeNotifier {
 
     final errorMsg = await _locationService.checkAndRequestPermissions();
     if (errorMsg != null) {
-        _locationMessage = errorMsg;
-        notifyListeners();
-        return;
-      }
+      _locationMessage = errorMsg;
+      notifyListeners();
+      return;
+    }
 
     _locationMessage = "Fetching location...";
     notifyListeners();
 
     try {
-      _locationSubscription = _locationService.getLocationStream().listen((LocationData currentLocation) {
+      _locationSubscription = _locationService.getLocationStream().listen((
+        LocationData currentLocation,
+      ) {
         _locationData = currentLocation;
         if (_locationData != null) {
-          _locationMessage = "Lat: ${_locationData!.latitude}\nLng: ${_locationData!.longitude}";
-          
-          final newLatLng = LatLng(_locationData!.latitude!, _locationData!.longitude!);
-          if (_locationHistory.isEmpty || _locationHistory.last.latitude != newLatLng.latitude || _locationHistory.last.longitude != newLatLng.longitude) {
+          _locationMessage =
+              "Lat: ${_locationData!.latitude}\nLng: ${_locationData!.longitude}";
+
+          final newLatLng = LatLng(
+            _locationData!.latitude!,
+            _locationData!.longitude!,
+          );
+          if (_locationHistory.isEmpty ||
+              _locationHistory.last.latitude != newLatLng.latitude ||
+              _locationHistory.last.longitude != newLatLng.longitude) {
             _locationHistory.add(newLatLng);
             _locationService.saveHistory(_locationHistory);
           }
