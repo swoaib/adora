@@ -29,20 +29,25 @@ class LocationService {
     bool serviceEnabled;
     PermissionStatus permissionGranted;
 
-    serviceEnabled = await _location.serviceEnabled();
-    if (!serviceEnabled) {
-      serviceEnabled = await _location.requestService();
+    try {
+      serviceEnabled = await _location.serviceEnabled();
       if (!serviceEnabled) {
-        return "Location services are disabled.";
+        serviceEnabled = await _location.requestService();
+        if (!serviceEnabled) {
+          return "Location services are disabled.";
+        }
       }
-    }
 
-    permissionGranted = await _location.hasPermission();
-    if (permissionGranted == PermissionStatus.denied) {
-      permissionGranted = await _location.requestPermission();
-      if (permissionGranted != PermissionStatus.granted) {
-        return "Location permission denied.";
+      permissionGranted = await _location.hasPermission();
+      if (permissionGranted == PermissionStatus.denied) {
+        permissionGranted = await _location.requestPermission();
+        if (permissionGranted != PermissionStatus.granted) {
+          return "Location permission denied.";
+        }
       }
+    } catch (e) {
+      debugPrint("Error checking location permission: $e");
+      return "Failed to determine location permissions: $e";
     }
 
     // Try to enable background mode, which requests "Always" location permission

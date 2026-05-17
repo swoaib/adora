@@ -103,11 +103,6 @@ class _LocationPageState extends State<LocationPage> {
           ),
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: _refreshLocation,
-      //   tooltip: 'Refresh Location',
-      //   child: const Icon(Icons.my_location),
-      // ),
     );
   }
 }

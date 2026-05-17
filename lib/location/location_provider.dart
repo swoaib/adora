@@ -46,10 +46,10 @@ class LocationProvider with ChangeNotifier {
 
     final errorMsg = await _locationService.checkAndRequestPermissions();
     if (errorMsg != null) {
-      _locationMessage = errorMsg;
-      notifyListeners();
-      return;
-    }
+        _locationMessage = errorMsg;
+        notifyListeners();
+        return;
+      }
 
     _locationMessage = "Fetching location...";
     notifyListeners();
