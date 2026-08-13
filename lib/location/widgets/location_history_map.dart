@@ -25,6 +25,7 @@ class _LocationHistoryMapState extends State<LocationHistoryMap> {
           CameraFit.bounds(
             bounds: bounds,
             padding: const EdgeInsets.all(32.0),
+            maxZoom: 15.0,
           ),
         );
       }
